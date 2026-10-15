@@ -37,10 +37,10 @@ Cube3d/
 │   └── keys.h             keycodes Mac / Linux
 ├── src/
 │   ├── main.c
-│   ├── parsing/           [Davi] lecture et validation du .cub
-│   ├── render/            [Axel] fenêtre, raycasting, textures
-│   ├── game/              [Axel] joueur, touches, déplacements
-│   ├── utils/             [Davi] erreurs, free, chaînes
+│   ├── parsing/           [Axel] lecture et validation du .cub
+│   ├── render/            [Davi] fenêtre, raycasting, textures
+│   ├── game/              [Davi] joueur, touches, déplacements
+│   ├── utils/             [Axel] erreurs, free, chaînes
 │   └── platform/          display_linux.c / display_macos.c (choisi par le Makefile)
 ├── libft/                 notre libft (+ get_next_line, ft_printf)
 ├── mlx_linux/ mlx_macos/  MiniLibX (sources)
@@ -69,7 +69,7 @@ Cube3d/
 
 ### Garanties de `t_scene` après un `parse_scene` réussi
 
-C'est ce qu'Axel (moteur) a le droit de supposer sans vérifier :
+C'est ce que Davi (moteur) a le droit de supposer sans vérifier :
 
 1. Les 4 `texture_paths` existent, finissent par `.xpm`, et le fichier s'ouvre.
 2. `floor_color` / `ceiling_color` sont au format `0xRRGGBB`.

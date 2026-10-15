@@ -19,22 +19,22 @@ Rien n'arrive sur `dev` ou `main` sans être passé par une PR relue par l'autre
 
 Deux rôles, attribués dans `docs/ROADMAP.md` (ordre des issues + dépendances). Chacun **possède** ses dossiers (c'est lui qui code dedans), mais **relit** tout ce que l'autre fait.
 
-| | **Davi** — Parsing & robustesse (issues `DV-xx`) | **Axel** — Moteur & jeu (issues `AX-xx`) |
+| | **Axel** — Parsing & robustesse (issues `AX-xx`) | **Davi** — Moteur & jeu (issues `DV-xx`) |
 |---|---|---|
 | Dossiers | `src/parsing/`, `src/utils/` | `src/render/`, `src/game/`, `src/platform/` |
 | Livre | une `t_scene` remplie et **garantie valide** | une fenêtre qui affiche et réagit aux touches |
 | Tests | `maps/invalid/*`, `tests/run_tests.sh` | `maps/valid/*`, test visuel, leaks à la fermeture |
 | Bonus | collisions, portes (parsing du `D`) | minimap, souris, sprites animés |
 
-**Le contrat entre les deux = `includes/cub3d.h`.** Tant que la `t_scene` respecte ce qui est écrit en commentaire au-dessus de la struct, Davi et Axel peuvent avancer sans s'attendre.
+**Le contrat entre les deux = `includes/cub3d.h`.** Tant que la `t_scene` respecte ce qui est écrit en commentaire au-dessus de la struct, Axel et Davi peuvent avancer sans s'attendre.
 
 > [!IMPORTANT]
 > À l'éval, chacun peut être interrogé sur **n'importe quelle** partie (le raycasting surtout). D'où la règle : on relit 100 % des PR de l'autre et on pose des questions jusqu'à comprendre. Une PR qu'on ne comprend pas, on ne l'approuve pas.
 
 ### Comment tester sans attendre l'autre
 
-- **Axel n'attend pas le parsing** : en semaine 1-2, il écrit en dur une petite map dans une fonction de test locale (branche à lui, pas commitée sur `dev`) ou utilise une `t_scene` remplie à la main.
-- **Davi n'attend pas le rendu** : le parsing se teste entièrement avec `tests/run_tests.sh` (pas besoin de fenêtre).
+- **Davi n'attend pas le parsing** : en semaine 1-2, il écrit en dur une petite map dans une fonction de test locale (branche à lui, pas commitée sur `dev`) ou utilise une `t_scene` remplie à la main.
+- **Axel n'attend pas le rendu** : le parsing se teste entièrement avec `tests/run_tests.sh` (pas besoin de fenêtre).
 
 ---
 
@@ -188,7 +188,7 @@ git push --force-with-lease     # seulement sur TA branche, jamais sur dev/main
 
 - [ ] Le binôme accepte l'invitation GitHub et clone le repo
 - [ ] Lire ensemble le sujet (`docs/subject.pdf`) et ce fichier
-- [ ] Valider ensemble la répartition de `docs/ROADMAP.md` (Davi parsing / Axel moteur)
+- [ ] Valider ensemble la répartition de `docs/ROADMAP.md` (Axel parsing / Davi moteur)
 - [ ] Relire `includes/cub3d.h` ensemble : renommer ce qui n'est pas clair **maintenant**, après c'est trop tard
 - [ ] Lire ensemble la partie 1 du tuto [lodev raycasting](https://lodev.org/cgtutor/raycasting.html) (le moteur repose dessus)
 - [ ] **Discuter du thème** (cf. §11)
