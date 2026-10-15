@@ -18,3 +18,5 @@ mlx_linux/test/mlx-test
 *.swp
 *.dSYM/
 vgcore.*
+mlx_linux/makefile.gen
+mlx_linux/test/makefile.gen

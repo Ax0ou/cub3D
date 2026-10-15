@@ -90,7 +90,7 @@ $(LIBFT):
 			$(MAKE) -C $(LIBFT_DIR)
 
 $(MLX):
-			$(MAKE) -C $(MLX_DIR) 2>/dev/null
+			$(MAKE) -C $(MLX_DIR)
 
 clean:
 			$(MAKE) -C $(LIBFT_DIR) clean
