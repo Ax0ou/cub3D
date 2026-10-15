@@ -1,8 +1,8 @@
-*This project has been created as part of the 42 curriculum by aalvarad, <login2>.*
+*This project has been created as part of the 42 curriculum by aalvarad, dbomfim-.*
 
 # cub3D
 
-> **TODO (week 4):** replace `<login2>` above, fill the theme / features / screenshots,
+> **TODO (week 4):** check the logins above, fill the theme / features / screenshots,
 > and complete the "AI usage" section. The first line MUST stay in italics (subject, chapter VI).
 
 ## Description
