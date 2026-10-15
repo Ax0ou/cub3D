@@ -1,0 +1,78 @@
+# ---------------------------------------------------------------------------
+# CI cub3D — runs on every push and every Pull Request to dev / main.
+#
+#   norminette   : norm of src/ includes/ libft/        (REQUIRED to merge)
+#   build-linux  : make, no relink, make bonus           (REQUIRED to merge)
+#   build-macos  : make on macOS (mlx_macos)             (REQUIRED to merge)
+#   tests        : tests/run_tests.sh --valid --leaks    (red until the code
+#                  is written; becomes REQUIRED at the end of week 3)
+# ---------------------------------------------------------------------------
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  norminette:
+    name: Norminette
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install norminette
+        run: pip install norminette
+      - name: Run norminette
+        run: |
+          norminette src includes libft | tee norm.log
+          if grep -q "Error" norm.log; then
+            echo "::error::Norm errors found — run 'make norm' locally"
+            exit 1
+          fi
+
+  build-linux:
+    name: Build (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MiniLibX dependencies
+        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxext-dev libbsd-dev zlib1g-dev
+      - name: make
+        run: make
+      - name: No relink
+        run: |
+          make 2>&1 | tee relink.log
+          grep -q "Nothing to be done" relink.log || { echo "::error::Makefile relinks"; exit 1; }
+      - name: make bonus
+        run: make bonus
+      - name: make re / fclean
+        run: make re && make fclean && test ! -f cub3D
+
+  build-macos:
+    name: Build (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: make
+        run: make
+
+  tests:
+    name: Tests (parsing + valid maps + leaks)
+    runs-on: ubuntu-latest
+    needs: build-linux
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libx11-dev libxext-dev libbsd-dev zlib1g-dev xvfb valgrind
+      - name: make
+        run: make
+      - name: Run tester (virtual display)
+        run: xvfb-run -a ./tests/run_tests.sh --valid --leaks

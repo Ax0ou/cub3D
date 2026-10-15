@@ -1,0 +1,20 @@
+# build
+obj/
+obj_bonus/
+*.o
+*.d
+*.a
+cub3D
+cub3D_bonus
+
+# mlx_linux generates these
+mlx_linux/Makefile.gen
+mlx_linux/test/mlx-test
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.dSYM/
+vgcore.*
