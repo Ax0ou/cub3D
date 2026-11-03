@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pixel.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: dbomfim- <dbomfim-@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/10/15 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/10/28 15:52:58 by dbomfim-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,19 @@
 
 /*
 ** put_pixel — writes one pixel in an image buffer (NOT on the screen).
-** TODO (issue: render / window)
-**   - ignore x/y outside [0, width[ / [0, height[
-**   - dst = addr + y * line_length + x * (bits_per_pixel / 8)
-**   - *(unsigned int *)dst = color
+** Pixels outside the image are ignored (walls very close give negative or
+** too big rows). line_length is in bytes and may include padding: never
+** replace it with width * 4.
 */
 void	put_pixel(t_image *image, int x, int y, int color)
 {
-	(void)image;
-	(void)x;
-	(void)y;
-	(void)color;
+	char	*dst;
+
+	if (x < 0 || y < 0 || x >= image->width || y >= image->height)
+		return ;
+	dst = image->addr + y * image->line_length
+		+ x * (image->bits_per_pixel / 8);
+	*(unsigned int *)dst = color;
 }
 
 /*
