@@ -53,6 +53,7 @@ SRC_FILES	=	main.c \
 				utils/error.c \
 				utils/cleanup.c \
 				utils/string_utils.c \
+				debug/fake_scene.c \
 				$(PLATFORM)
 
 # TODO (week 5, bonus issues): list the *_bonus.c files here.

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: dbomfim- <dbomfim-@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/10/15 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/10/28 15:52:58 by dbomfim-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3d.h"
+#include "debug.h"
 
 /*
 ** main — the glue between the 3 big modules. Already written: it is the
@@ -37,9 +38,12 @@ int	main(int argc, char **argv)
 		free_scene(&game.scene);
 		return (1);
 	}
+	if (!fake_scene(&game.scene))
+		exit_error(&game, "DEBUG fake_scene failed");
 	init_player(&game);
 	if (!init_graphics(&game) || !load_textures(&game))
 		exit_error(&game, "could not initialise graphics");
+	debug_draw(&game);
 	setup_hooks(&game);
 	mlx_loop(game.mlx);
 	destroy_game(&game);
