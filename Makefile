@@ -66,40 +66,65 @@ OBJS_BONUS	=	$(addprefix $(OBJ_B_DIR)/, $(SRC_BONUS_FILES:.c=.o))
 DEPS_BONUS	=	$(OBJS_BONUS:.o=.d)
 
 # ---------------------------------------------------------------------------
+# Output: quiet build, one line per library and at the end. Compiler errors
+# are still shown in full.
+# Run "make V=1" to see the real commands.
+# ---------------------------------------------------------------------------
+GREEN		=	\033[32m
+YELLOW		=	\033[33m
+RESET		=	\033[0m
+
+ifeq ($(V), 1)
+	Q		=
+else
+	Q		=	@
+endif
+MAKEFLAGS	+=	--no-print-directory
+
+# ---------------------------------------------------------------------------
 # Rules
 # ---------------------------------------------------------------------------
 all:		$(NAME)
 
 $(NAME):	$(LIBFT) $(MLX) $(OBJS)
-			$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+			$(Q)$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
+			@printf "$(GREEN)✔ $(NAME) ready$(RESET)\n"
 
 bonus:		$(NAME_BONUS)
 
 $(NAME_BONUS):	$(LIBFT) $(MLX) $(OBJS_BONUS)
-			$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBS) -o $(NAME_BONUS)
+			$(Q)$(CC) $(CFLAGS) $(OBJS_BONUS) $(LIBS) -o $(NAME_BONUS)
+			@printf "$(GREEN)✔ $(NAME_BONUS) ready$(RESET)\n"
 
 $(OBJ_DIR)/%.o:	$(SRC_DIR)/%.c
 			@mkdir -p $(dir $@)
-			$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDES) -c $< -o $@
+			$(Q)$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDES) -c $< -o $@
 
 $(OBJ_B_DIR)/%.o:	$(SRC_DIR)/%.c
 			@mkdir -p $(dir $@)
-			$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDES) -c $< -o $@
+			$(Q)$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
-			$(MAKE) -C $(LIBFT_DIR)
+			@printf "$(YELLOW)  LIB$(RESET) libft\n"
+			$(Q)$(MAKE) -s -C $(LIBFT_DIR)
 
+# MLX is old C: "int f();" breaks with C23, the default since GCC 15.
+# Its output is very noisy: hidden, and replayed in full only if it fails.
 $(MLX):
-			$(MAKE) -C $(MLX_DIR)
+			@printf "$(YELLOW)  LIB$(RESET) minilibx\n"
+			$(Q)$(MAKE) -C $(MLX_DIR) CC="$(CC) -std=gnu17" >/dev/null 2>&1 \
+				|| $(MAKE) -C $(MLX_DIR) CC="$(CC) -std=gnu17"
 
 clean:
-			$(MAKE) -C $(LIBFT_DIR) clean
-			-$(MAKE) -C $(MLX_DIR) clean 2>/dev/null
-			$(RM) $(OBJ_DIR) $(OBJ_B_DIR)
+			$(Q)$(MAKE) -s -C $(LIBFT_DIR) clean
+			-$(Q)$(MAKE) -C $(MLX_DIR) clean >/dev/null 2>&1
+			$(Q)$(RM) $(OBJ_DIR) $(OBJ_B_DIR)
+			@printf "$(YELLOW)✔ objects removed$(RESET)\n"
 
 fclean:		clean
-			$(MAKE) -C $(LIBFT_DIR) fclean
-			$(RM) $(NAME) $(NAME_BONUS)
+			$(Q)$(MAKE) -s -C $(LIBFT_DIR) fclean
+			$(Q)$(RM) $(NAME) $(NAME_BONUS)
+			@printf "$(YELLOW)✔ $(NAME) removed$(RESET)\n"
 
 re:			fclean all
 
