@@ -6,7 +6,7 @@
 /*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/10/15 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/10 12:00:00 by aalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,28 @@
 
 /*
 ** has_extension — 1 if path ends EXACTLY with extension, else 0.
-** TODO (issue: parsing / arguments)
-**   - ".cub" alone is not a valid name (nothing before the dot)
+**   - ".cub" alone is not a valid name (nothing before the dot),
+**     neither is "maps/.cub"
 **   - "map.cub.txt" -> 0, "map.CUB" -> 0, "map.cub" -> 1
 **   - also reused to check texture paths end with ".xpm"
 */
 int	has_extension(char *path, char *extension)
 {
-	(void)path;
-	(void)extension;
+	int	path_len;
+	int	ext_len;
+	int	start;
+
+	if (!path || !extension)
+		return (0);
+	path_len = ft_strlen(path);
+	ext_len = ft_strlen(extension);
+	if (path_len <= ext_len)
+		return (0);
+	start = path_len - ext_len;
+	if (path[start - 1] == '/')
+		return (0);
+	if (ft_strncmp(path + start, extension, ext_len) != 0)
+		return (0);
 	return (1);
 }
 
