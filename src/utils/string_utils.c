@@ -6,7 +6,7 @@
 /*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/10/15 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:00:00 by aalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,29 +15,41 @@
 /*
 ** is_space — 1 for ' ' and '\t' (decide as a team if '\t' is accepted
 ** between an identifier and its value; write the choice in ARCHITECTURE.md).
-** TODO (issue: utils / strings)
 */
 int	is_space(char c)
 {
-	(void)c;
+	if (c == ' ' || c == '\t')
+		return (1);
 	return (0);
 }
 
 /*
 ** skip_spaces — returns a pointer to the first non-space char of str.
-** TODO (issue: utils / strings)
 */
 char	*skip_spaces(char *str)
 {
-	return (str);
+	int	i;
+
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (str[i] && is_space(str[i]))
+		i++;
+	return (&str[i]);
 }
 
 /*
 ** is_blank_line — 1 if the line is empty or only contains spaces.
-** TODO (issue: utils / strings)
+** A NULL line counts as blank.
 */
 int	is_blank_line(char *line)
 {
-	(void)line;
-	return (1);
+	char	*rest;
+
+	if (!line)
+		return (1);
+	rest = skip_spaces(line);
+	if (rest[0] == '\0')
+		return (1);
+	return (0);
 }
