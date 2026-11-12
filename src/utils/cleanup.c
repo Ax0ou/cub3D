@@ -6,7 +6,7 @@
 /*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/10/15 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/09 12:00:00 by aalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,42 @@
 /*
 ** free_string_array — frees a NULL-terminated array of strings + the array.
 ** Accepts NULL.
-** TODO (issue: utils / cleanup)
 */
 void	free_string_array(char **array)
 {
-	(void)array;
+	int	i;
+
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
 }
 
 /*
 ** free_scene — frees the 4 texture paths and the map. Accepts a scene
 ** that is only partially filled (parser error in the middle).
-** TODO (issue: utils / cleanup)  set freed pointers to NULL
+** Freed pointers are set to NULL, so calling it twice is safe.
 */
 void	free_scene(t_scene *scene)
 {
-	(void)scene;
+	int	i;
+
+	if (!scene)
+		return ;
+	i = 0;
+	while (i < SIDE_COUNT)
+	{
+		free(scene->texture_paths[i]);
+		scene->texture_paths[i] = NULL;
+		i++;
+	}
+	free_string_array(scene->map);
+	scene->map = NULL;
 }
 
 /*
