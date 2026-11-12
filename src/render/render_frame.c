@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_frame.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: dbomfim- <dbomfim-@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/10/15 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/12 12:00:00 by dbomfim-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,28 @@
 /*
 ** draw_ceiling_and_floor — top half of the frame = ceiling_color,
 ** bottom half = floor_color.
-** TODO (issue: render / ceiling & floor)  use put_pixel()
+** Drawn first, every frame: the walls are then drawn on top of it.
 */
 void	draw_ceiling_and_floor(t_game *game)
 {
-	(void)game;
+	int	x;
+	int	y;
+	int	color;
+
+	y = 0;
+	while (y < WIN_HEIGHT)
+	{
+		color = game->scene.ceiling_color;
+		if (y >= WIN_HEIGHT / 2)
+			color = game->scene.floor_color;
+		x = 0;
+		while (x < WIN_WIDTH)
+		{
+			put_pixel(&game->frame, x, y, color);
+			x++;
+		}
+		y++;
+	}
 }
 
 /*
@@ -38,6 +55,7 @@ void	draw_ceiling_and_floor(t_game *game)
 */
 int	render_frame(t_game *game)
 {
-	(void)game;
+	draw_ceiling_and_floor(game);
+	mlx_put_image_to_window(game->mlx, game->window, game->frame.ptr, 0, 0);
 	return (0);
 }
