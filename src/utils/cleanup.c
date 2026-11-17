@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanup.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
+/*   By: dbomfim- <dbomfim-@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/11/09 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/17 12:00:00 by dbomfim-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,32 @@ void	free_scene(t_scene *scene)
 
 /*
 ** destroy_game — frees everything, in the reverse order of creation:
-** TODO (issue: game / clean exit)
-**   - each texture image (mlx_destroy_image) if not NULL
-**   - frame image, window (mlx_destroy_window)
-**   - destroy_display(game->mlx)   (already written, one file per OS,
-**     see src/platform/ and docs/ARCHITECTURE.md "macOS vs Linux")
-**   - free_scene(&game->scene)
+** textures, frame image, window, then the MLX display, then the scene.
+** Every pointer is tested: we can get here at any step (exit_error during
+** init_graphics, ESC, red cross). Freed pointers are set to NULL, so
+** calling it twice is safe.
 */
 void	destroy_game(t_game *game)
 {
-	(void)game;
+	int	i;
+
+	if (!game)
+		return ;
+	i = 0;
+	while (i < SIDE_COUNT)
+	{
+		if (game->textures[i].ptr)
+			mlx_destroy_image(game->mlx, game->textures[i].ptr);
+		game->textures[i].ptr = NULL;
+		i++;
+	}
+	if (game->frame.ptr)
+		mlx_destroy_image(game->mlx, game->frame.ptr);
+	game->frame.ptr = NULL;
+	if (game->window)
+		mlx_destroy_window(game->mlx, game->window);
+	game->window = NULL;
+	destroy_display(game->mlx);
+	game->mlx = NULL;
+	free_scene(&game->scene);
 }
