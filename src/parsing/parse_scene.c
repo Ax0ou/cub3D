@@ -6,7 +6,7 @@
 /*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/11/10 12:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/23 13:00:00 by aalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,31 @@ int	has_extension(char *path, char *extension)
 /*
 ** parse_scene — reads the whole .cub file and fills scene.
 ** Returns 1 on success, 0 on error (the error message is ALREADY printed).
-** TODO (issue: parsing / orchestration)
-**   1. lines = read_file_lines(path)            (NULL -> error)
-**   2. index = 0; parse_elements(scene, lines, &index)
-**      -> must end with the 6 elements found exactly once
-**   3. skip blank lines, then parse_map(scene, lines, index)
-**   4. check_map_chars(scene) then check_map_closed(scene)
-**   5. free_string_array(lines) in EVERY path (success and errors)
+**   1. read_file_lines  : every line of the file (NULL -> error)
+**   2. parse_elements   : the 6 elements, index stops just after them
+**   3. parse_map        : the rest of the file, as a rectangle
+**   4. check_map_chars then check_map_closed
+** Each step only runs if the previous one succeeded. lines is freed in
+** EVERY path. On error the scene may be half filled: main calls
+** free_scene(), we free nothing of it here.
 */
 int	parse_scene(t_scene *scene, char *path)
 {
-	(void)scene;
-	(void)path;
-	return (1);
+	char	**lines;
+	int		index;
+	int		ok;
+
+	lines = read_file_lines(path);
+	if (!lines)
+		return (0);
+	index = 0;
+	ok = parse_elements(scene, lines, &index);
+	if (ok)
+		ok = parse_map(scene, lines, index);
+	if (ok)
+		ok = check_map_chars(scene);
+	if (ok)
+		ok = check_map_closed(scene);
+	free_string_array(lines);
+	return (ok);
 }
