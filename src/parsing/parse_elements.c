@@ -6,7 +6,7 @@
 /*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/11/15 14:40:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/18 13:00:00 by aalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,35 @@ t_element	get_element_type(char *line)
 
 /*
 ** parse_texture — stores the path of one wall texture.
-** TODO (issue: parsing / textures)
-**   - value = what is after the identifier, spaces skipped
-**   - trim trailing spaces; empty value -> error
-**   - must end with ".xpm" (has_extension)
-**   - the file must exist: try open() then close()
-**   - type ELEM_NO -> scene->texture_paths[NORTH] = ft_strdup(value), etc.
-**   Returns 1 on success, 0 on error (message printed).
+** Returns 1 on success, 0 on error (message printed).
+** value = what is after the identifier, leading spaces already skipped.
+**   - trailing spaces are cut IN PLACE (the line is ours, from GNL)
+**   - empty value -> error, must end with ".xpm"
+**   - the file must exist: open() then close()
+**   - ELEM_NO..ELEM_EA have the same values as NORTH..EAST (0..3), so
+**     type is used directly as the index of texture_paths[]
+**   - the copy is freed by free_scene(), also when a later line fails
 */
 int	parse_texture(t_scene *scene, t_element type, char *value)
 {
-	(void)scene;
-	(void)type;
-	(void)value;
+	int	len;
+	int	fd;
+
+	len = ft_strlen(value);
+	while (len > 0 && is_space(value[len - 1]))
+		len--;
+	value[len] = '\0';
+	if (len == 0)
+		return (!print_error("texture path is missing"));
+	if (!has_extension(value, ".xpm"))
+		return (!print_error("texture must be a .xpm file"));
+	fd = open(value, O_RDONLY);
+	if (fd < 0)
+		return (!print_error("texture file cannot be opened"));
+	close(fd);
+	scene->texture_paths[type] = ft_strdup(value);
+	if (!scene->texture_paths[type])
+		return (!print_error("malloc failed"));
 	return (1);
 }
 
