@@ -6,7 +6,7 @@
 /*   By: aalvarad <aalvarad@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/11/19 13:00:00 by aalvarad         ###   ########.fr       */
+/*   Updated: 2026/11/23 12:00:00 by aalvarad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,19 +70,54 @@ int	check_map_chars(t_scene *scene)
 }
 
 /*
+** is_open_cell — 1 if the cell (x, y) lets the player walk out of the map.
+** Only walkable cells ('0') can be open. A walkable cell is open if:
+**   - it is on the border of the rectangle (first/last row or column)
+**   - or one of its 4 neighbours (up, down, left, right) is MAP_VOID (' ')
+** The border test comes first, so map[y - 1], map[y + 1], [x - 1] and
+** [x + 1] are never read outside the map.
+*/
+static int	is_open_cell(t_scene *scene, int x, int y)
+{
+	char	**map;
+
+	map = scene->map;
+	if (map[y][x] != MAP_EMPTY)
+		return (0);
+	if (x == 0 || y == 0)
+		return (1);
+	if (x == scene->map_width - 1 || y == scene->map_height - 1)
+		return (1);
+	if (map[y - 1][x] == MAP_VOID || map[y + 1][x] == MAP_VOID)
+		return (1);
+	if (map[y][x - 1] == MAP_VOID || map[y][x + 1] == MAP_VOID)
+		return (1);
+	return (0);
+}
+
+/*
 ** check_map_closed — the player must not be able to "walk out" of the map.
-** TODO (issue: parsing / map validation)
-**   Simple rule (no flood fill needed): for every walkable cell ('0' and
-**   the spawn), the 4 neighbours (up, down, left, right) must exist and
-**   must NOT be MAP_VOID (' ').
-**   -> a '0' on the first/last row or column = open map
-**   -> a '0' next to a ' ' = hole in the wall
+** Called AFTER check_map_chars: the spawn is already a '0', so it is
+** checked like any other walkable cell. No flood fill, no recursion.
 **   errors: maps/invalid/map_open_wall.cub, map_space_hole.cub,
 **           map_player_on_border.cub
-**   Optional alternative: flood fill from the spawn on a COPY of the map.
 */
 int	check_map_closed(t_scene *scene)
 {
-	(void)scene;
+	int	x;
+	int	y;
+
+	y = 0;
+	while (y < scene->map_height)
+	{
+		x = 0;
+		while (x < scene->map_width)
+		{
+			if (is_open_cell(scene, x, y))
+				return (!print_error("map is not closed by walls"));
+			x++;
+		}
+		y++;
+	}
 	return (1);
 }
