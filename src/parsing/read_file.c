@@ -82,49 +82,59 @@ static char	**append_line(char **lines, int count, char *line)
 ** read_all_lines — reads fd with get_next_line until it returns NULL,
 ** even after a malloc failure: GNL keeps a static buffer, stopping early
 ** would leak it. Empty lines are kept (needed to detect an empty line
-** inside the map). NULL if the file is empty or malloc failed, printed.
-** "count > 0 but lines == NULL" means a malloc failed: we only free the
-** remaining lines.
+** inside the map). *count = number of lines read.
+** A file that never ends (/dev/random) is stopped at MAX_FILE_LINES: we
+** close fd, read() then fails and GNL frees its buffer by itself.
 */
-static char	**read_all_lines(int fd)
+static char	**read_all_lines(int fd, int *count)
 {
 	char	**lines;
 	char	*line;
-	int		count;
 
 	lines = NULL;
-	count = 0;
+	*count = 0;
 	line = get_next_line(fd);
 	while (line)
 	{
-		if (count > 0 && !lines)
+		if (*count == MAX_FILE_LINES)
+			close(fd);
+		if (*count >= MAX_FILE_LINES || (*count > 0 && !lines))
 			free(line);
 		else
-			lines = append_line(lines, count, strip_newline(line));
-		count++;
+			lines = append_line(lines, *count, strip_newline(line));
+		(*count)++;
 		line = get_next_line(fd);
 	}
-	if (count > 0 && !lines)
-		print_error("malloc failed");
-	else if (count == 0)
-		print_error("map file is empty");
 	return (lines);
 }
 
 /*
 ** read_file_lines — returns every line of the file, without '\n',
 ** in a NULL-terminated array. NULL on error (open failed, directory,
-** empty file, malloc failed) with the error ALREADY printed.
+** empty file, file too big, malloc failed) with the error ALREADY printed.
+** "count > 0 but lines == NULL" means a malloc failed.
 */
 char	**read_file_lines(char *path)
 {
 	int		fd;
+	int		count;
 	char	**lines;
 
 	fd = open_scene_file(path);
 	if (fd < 0)
 		return (NULL);
-	lines = read_all_lines(fd);
-	close(fd);
+	lines = read_all_lines(fd, &count);
+	if (count <= MAX_FILE_LINES)
+		close(fd);
+	if (count > MAX_FILE_LINES)
+	{
+		free_string_array(lines);
+		lines = NULL;
+		print_error("map file is too big");
+	}
+	else if (count > 0 && !lines)
+		print_error("malloc failed");
+	else if (count == 0)
+		print_error("map file is empty");
 	return (lines);
 }
