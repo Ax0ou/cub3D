@@ -6,7 +6,7 @@
 /*   By: dbomfim- <dbomfim-@student.42lausanne.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/15 12:00:00 by aalvarad          #+#    #+#             */
-/*   Updated: 2026/11/12 12:00:00 by dbomfim-         ###   ########.fr       */
+/*   Updated: 2026/11/23 12:00:00 by dbomfim-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,25 @@ void	draw_ceiling_and_floor(t_game *game)
 
 /*
 ** render_frame — draws ONE full image and shows it. Called by game_loop.
-** TODO (issue: render / raycasting loop)
-**   draw_ceiling_and_floor(game);
-**   for screen_x in [0, WIN_WIDTH[:
-**       t_ray ray;
-**       init_ray(game, &ray, screen_x);
-**       run_dda(game, &ray);
-**       compute_wall_distance(game, &ray);
-**       compute_wall_slice(&ray);
-**       draw_wall_column(game, &ray, screen_x);
-**   mlx_put_image_to_window(mlx, window, frame.ptr, 0, 0);
-**   (no "for" in the norm -> while loop)
+** Background first, then one ray per screen column draws its wall slice
+** on top. The image is sent to the window only once, at the end.
 */
 int	render_frame(t_game *game)
 {
+	t_ray	ray;
+	int		screen_x;
+
 	draw_ceiling_and_floor(game);
+	screen_x = 0;
+	while (screen_x < WIN_WIDTH)
+	{
+		init_ray(game, &ray, screen_x);
+		run_dda(game, &ray);
+		compute_wall_distance(game, &ray);
+		compute_wall_slice(&ray);
+		draw_wall_column(game, &ray, screen_x);
+		screen_x++;
+	}
 	mlx_put_image_to_window(game->mlx, game->window, game->frame.ptr, 0, 0);
 	return (0);
 }
