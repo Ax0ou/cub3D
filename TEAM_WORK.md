@@ -141,7 +141,7 @@ Ajouter un nouveau `.c` ? → l'ajouter dans `SRC_FILES` du `Makefile` (pas de w
 | Norminette | `src/ includes/ libft/` | ✅ oui |
 | Build (Linux) | `make`, pas de relink, `make bonus`, `make re` | ✅ oui |
 | Build (macOS) | `make` sur Mac | ✅ oui |
-| Tests | toutes les maps invalides → `Error`, maps valides qui tournent, valgrind | ⚠️ rouge au début (le code n'est pas écrit), **obligatoire à partir de la fin de semaine 3** |
+| Tests | toutes les maps invalides → `Error`, maps valides qui tournent, valgrind | ✅ oui |
 
 Une croix rouge sur ta PR ? Clique sur *Details* → lis le log → corrige → re-push sur la même branche. La PR se met à jour toute seule.
 
