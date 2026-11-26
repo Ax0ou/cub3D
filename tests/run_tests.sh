@@ -18,7 +18,8 @@ RUN_LEAKS=0
 PASS=0
 FAIL=0
 VG_LOG=$(mktemp)
-trap 'rm -f "$VG_LOG"' EXIT
+TMP_DIR=$(mktemp -d)
+trap 'rm -rf "$VG_LOG" "$TMP_DIR"' EXIT
 
 GREEN="\033[32m"; RED="\033[31m"; YELLOW="\033[33m"; RESET="\033[0m"
 
@@ -94,6 +95,16 @@ expect_error "two arguments" maps/valid/minimal.cub maps/valid/minimal.cub
 expect_error "file does not exist" maps/does_not_exist.cub
 expect_error "wrong extension (.ber)" maps/invalid/wrong_extension.ber
 expect_error "directory named .cub" tests/fixtures/folder.cub
+
+# Files we cannot commit: devices and a file without read permission.
+echo "=== Special files ==="
+ln -s /dev/null "$TMP_DIR/null.cub"
+ln -s /dev/random "$TMP_DIR/random.cub"
+cp maps/valid/minimal.cub "$TMP_DIR/no_rights.cub"
+chmod 000 "$TMP_DIR/no_rights.cub"
+expect_error "/dev/null as .cub" "$TMP_DIR/null.cub"
+expect_error "/dev/random as .cub" "$TMP_DIR/random.cub"
+expect_error "file without read permission" "$TMP_DIR/no_rights.cub"
 
 echo "=== Invalid maps ==="
 for map in maps/invalid/*.cub; do

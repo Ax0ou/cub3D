@@ -42,6 +42,7 @@
 # define MAP_WALL '1'
 # define MAP_VOID ' '
 # define PLAYER_CHARS "NSEW"
+# define MAX_FILE_LINES 10000
 
 /* ---------------------------------------------------------------------------
 ** e_side: which face of a wall a ray hit. Also used as the index of

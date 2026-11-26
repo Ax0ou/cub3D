@@ -112,6 +112,8 @@ Tout est détaillé en commentaire au-dessus des fonctions de `src/render/raycas
 | D8 | Un seul `t_game` dans `main`, pas de globale | norme |
 | D9 | `mlx_destroy_display` n'existe que sur Linux → fonction `destroy_display()` dans `src/platform/`, le Makefile compile la bonne version | pas de `#ifdef` dans les `.c` |
 | D10 | *(à décider au kickoff)* tabulations acceptées comme séparateurs dans les éléments ? | à trancher, puis l'écrire ici |
+| D11 | Couleurs : chiffres uniquement, espaces autour acceptés, **zéros devant acceptés** (`F 0255,0,0` = 255). Refusé : signe `+`/`-`, composante vide (`F ,255,255`), virgule en trop, valeur > 255 | simple à expliquer, et un nombre trop long ne peut pas faire d'overflow (on s'arrête dès que ça dépasse 255) |
+| D12 | Un `.cub` de plus de `MAX_FILE_LINES` (10 000) lignes est refusé : « map file is too big » | sinon un fichier sans fin (`/dev/random` renommé en `.cub`) fait tourner le programme pour toujours |
 
 ## 6. Correspondance avec le repo de référence (KrolPolski/cube3d)
 
