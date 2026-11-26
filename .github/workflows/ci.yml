@@ -4,8 +4,7 @@
 #   norminette   : norm of src/ includes/ libft/        (REQUIRED to merge)
 #   build-linux  : make, no relink, make bonus           (REQUIRED to merge)
 #   build-macos  : make on macOS (mlx_macos)             (REQUIRED to merge)
-#   tests        : tests/run_tests.sh --valid --leaks    (red until the code
-#                  is written; becomes REQUIRED at the end of week 3)
+#   tests        : tests/run_tests.sh --valid --leaks    (REQUIRED to merge)
 # ---------------------------------------------------------------------------
 name: CI
 
@@ -68,6 +67,7 @@ jobs:
     name: Tests (parsing + valid maps + leaks)
     runs-on: ubuntu-latest
     needs: build-linux
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
       - name: Install dependencies
